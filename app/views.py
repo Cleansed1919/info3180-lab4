@@ -3,6 +3,7 @@ from app import app, db, login_manager
 from flask import render_template, request, redirect, url_for, flash, session, abort
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.utils import secure_filename
+from werkzeug.security import check_password_hash
 from app.models import UserProfile
 from app.forms import LoginForm
 
@@ -26,9 +27,16 @@ def about():
 @app.route('/upload', methods=['POST', 'GET'])
 def upload():
     # Instantiate your form class
-
+    form = LoginForm()
+    user = UserProfile.query.filter_by(username=form.username.data).first()
     # Validate file upload on submit
     if form.validate_on_submit():
+        if user and check_password_hash(user.password, form.password.data):
+            login_user(user)
+            flash("Login successful.")
+            return redirect(url_for('upload'))
+        else:
+            flash("Incorrect username or password, please try again.")
         # Get file data and save to your uploads folder
 
         flash('File Saved', 'success')

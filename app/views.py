@@ -1,6 +1,6 @@
 import os
 from app import app, db, login_manager
-from flask import render_template, request, redirect, url_for, flash, session, abort
+from flask import render_template, request, redirect, url_for, flash, session, abort, send_from_directory
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash
@@ -48,6 +48,15 @@ def upload():
 
     return render_template('upload.html', form=form)
 
+@app.route('/uploads/<filename>')
+def get_image(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+@app.route('/files')
+@login_required
+def files():
+    image_list = get_uploaded_images()
+    return render_template('files.html', images=image_list)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -104,3 +113,11 @@ def add_header(response):
 def page_not_found(error):
     """Custom 404 page."""
     return render_template('404.html'), 404
+
+def get_uploaded_images():
+    uploads = app.config['UPLOAD_FOLDER']
+    images = []
+    for subdir, dirs, files in os.walk(uploads):
+        for file in files:
+            images.append(file)
+    return images

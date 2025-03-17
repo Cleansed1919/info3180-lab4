@@ -2,9 +2,24 @@ body {
     padding-top: 5rem;
 }
 
-img {
-   max-width: 500px; 
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 10px;
 }
+
+.gridpic {
+    text-align: center;
+}
+
+.image {
+    max-width: 300px;
+    max-height: 300px;
+    width: auto;
+    height: auto;
+}
+
 
 .form-login {
     max-width: 330px;

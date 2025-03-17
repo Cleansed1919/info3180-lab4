@@ -50,6 +50,7 @@ def upload():
 
 @app.route('/uploads/<filename>')
 def get_image(filename):
+    print(f"Serving file from: {app.config['UPLOAD_FOLDER']}, Filename: {filename}")
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 @app.route('/files')
@@ -117,7 +118,9 @@ def page_not_found(error):
 def get_uploaded_images():
     uploads = app.config['UPLOAD_FOLDER']
     images = []
+    tru_img = ['jpg', 'png']
     for subdir, dirs, files in os.walk(uploads):
         for file in files:
-            images.append(file)
+            if file.split('.')[-1].lower() in tru_img:
+                images.append(file)
     return images

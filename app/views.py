@@ -79,6 +79,13 @@ def login():
 def load_user(id):
     return db.session.execute(db.select(UserProfile).filter_by(id=id)).scalar()
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Logout successful','info')
+    return redirect(url_for('home'))
+
 ###
 # The functions below should be applicable to all Flask apps.
 ###
